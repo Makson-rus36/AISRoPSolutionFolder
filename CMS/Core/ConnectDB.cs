@@ -69,6 +69,10 @@ namespace CMS.Core
             get { return sqlActiveConnection; }
         }
 
+        public void NewMethod()
+        {
+
+        }
         ~ConnectDB()
         {
             if (sqlActiveConnection!=null)
