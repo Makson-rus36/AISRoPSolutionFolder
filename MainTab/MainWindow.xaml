@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="MainTab.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MainTab"
+        mc:Ignorable="d">
+    <Grid>
+        <StackPanel>
+        <TextBlock Foreground="Black" FontWeight="Bold" Text="Добро пожаловать!" HorizontalAlignment="Center" FontSize="20" ></TextBlock>
+        <TextBlock FontSize="14" LineHeight="25" > На данной странице вы можете: 
+        <LineBreak/>
+        Ознакомиться с инструкцией: <Button Height="22" Content="Открыть" Background="Transparent"></Button>
+        <LineBreak/>
+        Перейти к настройкам программы <Button Height="22" Content="Открыть" Background="Transparent"></Button></TextBlock>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

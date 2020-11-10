@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="TabItemEnterprises.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TabItemEnterprises"
+        mc:Ignorable="d">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" >
+
+        </StackPanel>
+        <DataGrid Background="Transparent"  x:Name="DataGridEnterprise" Grid.Row="1" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Код" Binding="{Binding code}" ClipboardContentBinding="{x:Null}"/>
+                <DataGridTextColumn Header="Название" Binding="{Binding fullname}" ClipboardContentBinding="{x:Null}"/>
+                <DataGridTextColumn Header="Количество подразделений" Binding="{Binding count}" ClipboardContentBinding="{x:Null}"/>
+            </DataGrid.Columns>
+          
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,30 @@
+﻿<Window x:Class="AISRoP.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-AISRoP"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+       
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Menu x:Name="MainMenu">
+            <MenuItem Header="File" FontSize="14">
+                <MenuItem Header="Settings" Click="MenuItemSettings_OnClick"></MenuItem>
+                <Separator/>
+                <MenuItem Header="About" Click="MenuItemAbout_OnClick"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Window">
+                <MenuItem x:Name="MenuPlugin"  Header="Plugin windows"/>
+            </MenuItem>
+        </Menu>
+        <TabControl x:Name="MainContentTable" Grid.Row="1"/>
+            
+        
+
+    </Grid>
+</Window>
