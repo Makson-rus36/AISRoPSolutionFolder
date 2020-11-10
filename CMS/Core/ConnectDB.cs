@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CMS.Core
 {
 
-    public class ConnectDB
+    public class ConnectDB: IDisposable
     {
 
         
@@ -64,18 +64,9 @@ namespace CMS.Core
             return strCon;
         }
 
-        public SqlConnection GetSqlConnection
+        public void Dispose()
         {
-            get { return sqlActiveConnection; }
-        }
-
-        public void NewMethod()
-        {
-
-        }
-        ~ConnectDB()
-        {
-            if (sqlActiveConnection!=null)
+            if (sqlActiveConnection != null)
             {
                 try
                 {
@@ -85,19 +76,22 @@ namespace CMS.Core
                 }
                 catch (SqlException exception)
                 {
-                    LoggerHelper.logger.startLog(String.Format("Закрытие активного соеденения с БД: завершено c ошибками \n"+
-                        "---------\n" +
-                        "Сообщение: {0}\n" +
-                        "Подробно: {1}\n" +
-                        "Трассировка стека: {2}\n" +
-                        "---------", exception.Message, exception.InnerException, exception.StackTrace));
+                    LoggerHelper.logger.startLog(String.Format("Закрытие активного соеденения с БД: завершено c ошибками \n" +
+                                                               "---------\n" +
+                                                               "Сообщение: {0}\n" +
+                                                               "Подробно: {1}\n" +
+                                                               "Трассировка стека: {2}\n" +
+                                                               "---------", exception.Message, exception.InnerException, exception.StackTrace));
                 }
             }
         }
-    }
 
-    class MyClass2
-    {
+        public SqlConnection GetSqlConnection
+        {
+            get { return sqlActiveConnection; }
+        }
+
         
     }
+
 }
