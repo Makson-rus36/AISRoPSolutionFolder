@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CMS.Core
 {
@@ -11,7 +8,7 @@ namespace CMS.Core
     {
 #nullable enable
         public void DbExecuteNoReturn(object? sqlQuery);
-        public object? DbExecuteWithReturn(object? sqlQuery);
+        public DataView DbExecuteWithReturn(object? sqlQuery);
 #nullable disable
     }
 
@@ -47,9 +44,39 @@ namespace CMS.Core
             }
         }
 
-        public object DbExecuteWithReturn(object sqlQuery)
+        public DataView DbExecuteWithReturn(object sqlQuery)
         {
-            return null;
+            var connectDb = new ConnectDB();
+            DataTable dataTable = new DataTable();
+            try
+            {
+                var sqlConnection = connectDb.GetSqlConnection;
+                LoggerHelper.logger.startLog("Формирование команды к серверу: начато");
+                var sqlCommand = new SqlCommand(sqlQuery.ToString(), sqlConnection);
+                LoggerHelper.logger.startLog("Формирование команды к серверу: исполнение");
+                var adapter = new SqlDataAdapter(sqlCommand);
+                adapter.Fill(dataTable);
+
+                LoggerHelper.logger.startLog(
+                    "Формирование команды к серверу: исполнение (завершено успешно)."
+                    );
+            }
+            catch (Exception exception)
+            {
+                LoggerHelper.logger.startLog(string.Format(
+                    "Во время формирования или исполнения команды к серверу БД возникла неисправимая ошибка. \n" +
+                    "---------\n" +
+                    "Сообщение: {0}\n" +
+                    "Подробно: {1}\n" +
+                    "Трассировка стека: {2}\n" +
+                    "---------", exception.Message, exception.InnerException, exception.StackTrace));
+            }
+            finally
+            {
+                connectDb.Dispose();
+            }
+
+            return dataTable.DefaultView;
         }
     }
 }
