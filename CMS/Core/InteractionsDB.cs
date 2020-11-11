@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 namespace CMS.Core
 {
-    internal interface IInteractDatabase
+    public interface IInteractDatabase
     {
 #nullable enable
         public void DbExecuteNoReturn(object? sqlQuery);

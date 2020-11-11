@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>C:\Users\Maks\source\repos\AISRoPSolutionFolder\AISRoP\bin\Debug\Modules\</OutputPath>
+    <OutputPath>C:\Users\Maks\source\repos\AISRoPSolutionFolder\AISRoP\bin\Debug\net5.0-windows\Modules\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 

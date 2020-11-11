@@ -11,7 +11,8 @@
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0" >
-
+            <Button Content="Добавить" x:Name="btnAdd" Click="BtnAdd_OnClick"></Button>
+            <Button x:Name="btnEdit" Content="Редактировать" Click="BtnEdit_OnClick"></Button>
         </StackPanel>
         <DataGrid Background="Transparent"  x:Name="DataGridEnterprise" Grid.Row="1" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD" IsReadOnly="True">
             <DataGrid.Columns>

@@ -65,7 +65,8 @@ namespace CMS.Core
                         var field = string.Join(", ", tableField);
                         Console.WriteLine(string.Format("Name table: {0}", mType.Name));
                         sqlQuery = string.Format(sqlQuery, nameTable, field, values);
-                        Console.WriteLine(sqlQuery); //TODO: Logic for write in db
+                        InteractionsDB interactionsDb = new InteractionsDB();
+                        interactionsDb.DbExecuteNoReturn(sqlQuery);
                         break;
                     }
                 case WriteMode.UPDATEMODE:
@@ -103,7 +104,8 @@ namespace CMS.Core
                                 listSetValues.Add(string.Format("{0} = {1}", VARIABLE.Key, VARIABLE.Value));
                             sqlQuery = string.Format(sqlQuery, nameTable, string.Join(", ", listSetValues));
                             Console.WriteLine(string.Format("Name table: {0}", mType.Name));
-                            Console.WriteLine(sqlQuery); //TODO: Logic for write in db
+                            InteractionsDB interactionsDb = new InteractionsDB();
+                            interactionsDb.DbExecuteNoReturn(sqlQuery);
                         }
                         catch (Exception exception)
                         {
