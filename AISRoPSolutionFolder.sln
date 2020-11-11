@@ -29,6 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WindowAddData", "WindowAddD
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowEditData", "WindowEditData\WindowEditData.csproj", "{9507409A-A532-4886-8FC9-3A66C73C1F9D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F30DDE6-9302-4E0D-9171-20C43FCBDE00} = {4F30DDE6-9302-4E0D-9171-20C43FCBDE00}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -28,7 +28,8 @@ namespace TabItemEnterprises
         class enterprises
         {
             public string fullname { get; set; }
-            public ForeignKeyModel shortname { get; set; }
+            public string shortname { get; set; }
+            //public ForeignKeyModel shortname { get; set; }
         }
 
         public MainWindow()
@@ -47,7 +48,8 @@ namespace TabItemEnterprises
         {
            enterprises ent = new enterprises();
            ent.fullname = "";
-           ent.shortname = new ForeignKeyModel(){name = "", nameForeignColumn = "_type_name", nameForeignTable = "type_premises" };
+           ent.shortname = "";
+           //ent.shortname = new ForeignKeyModel(){name = "", nameForeignColumn = "_type_name", nameForeignTable = "type_premises" };
            WindowAddData.MainWindow aMainWindow = new WindowAddData.MainWindow(ent, new List<string>(){"Полное название", "Краткое название"});
            if(aMainWindow.ShowDialog() == true)
                loadData();
@@ -57,14 +59,16 @@ namespace TabItemEnterprises
         {
             var obj = DataGridEnterprise.SelectedCells;
             enterprises ent = new enterprises();
-            ent.fullname = ((DataRowView)obj[0].Item).Row.ItemArray[1].ToString(); 
-            //ent.shortname = ((DataRowView)obj[0].Item).Row.ItemArray[2].ToString();
+            ent.fullname = ((DataRowView)obj[0].Item).Row.ItemArray[1].ToString();
+            //WARNING! DO NOT UNCOMMIT
+            //ent.shortname = new ForeignKeyModel() { name = ((DataRowView)obj[0].Item).Row.ItemArray[2].ToString(), nameForeignColumn = "_type_name", nameForeignTable = "type_premises" };
+            ent.shortname = ((DataRowView)obj[0].Item).Row.ItemArray[2].ToString(); 
             int id = int.Parse(((DataRowView)obj[0].Item).Row.ItemArray[0].ToString());
             string condition = " code = " + id;
-            WindowEditData.WindowEdit windowEdit = new WindowEdit(ent, new List<string>() { "Полное название", "Краткое название" }, condition);
+            WindowEdit windowEdit = new WindowEdit(ent, new List<string>() { "Полное название", "Краткое название" }, condition);
             if(windowEdit.ShowDialog() == true)
                 loadData();
-            //int a = 0;
+            
         }
     }
 }

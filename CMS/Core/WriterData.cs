@@ -98,6 +98,9 @@ namespace CMS.Core
                                     case "System.Int32":
                                         dictionaryValues[prop.Name] = prop.GetValue(obj).ToString();
                                         break;
+                                    case "CMS.Core.ForeignKeyModel":
+                                        dictionaryValues[prop.Name] = ((ForeignKeyModel) prop.GetValue(obj)).name;
+                                        break;
                                     default:
                                         Console.WriteLine(prop.PropertyType.ToString());
                                         break;

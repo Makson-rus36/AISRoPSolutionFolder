@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -62,7 +63,26 @@ namespace WindowEditData
                             case "System.Int32":
 
                                 break;
-                            default:
+                            case "CMS.Core.ForeignKeyModel":
+                                ForeignKeyModel foreignKeyModel = (ForeignKeyModel)prop.GetValue(obj);
+                                ComboBox comboBox = new ComboBox();
+                                InteractionsDB interactionsDb = new InteractionsDB();
+                                comboBox.ItemsSource =
+                                    interactionsDb.DbExecuteWithReturn(String.Format("select * from {0}", foreignKeyModel.nameForeignTable));
+                                comboBox.DisplayMemberPath = foreignKeyModel.nameForeignColumn;
+                                DataTable dataTable = 
+                                    interactionsDb.DbExecuteWithReturn(String.Format("select * from {0}", foreignKeyModel.nameForeignTable)).ToTable();
+                                int index = 0;
+                                foreach (DataRowView VARIABLE in comboBox.Items)
+                                {
+                                    if (VARIABLE.Row.ItemArray[0].ToString() == foreignKeyModel.name)
+                                        comboBox.SelectedIndex = index;
+                                    index++;
+                                }
+                            MainPanel.Children.Add(comboBox);
+
+                                break;
+                        default:
                                 Console.WriteLine(prop.PropertyType.ToString());
                                 break;
                         }
@@ -94,7 +114,17 @@ namespace WindowEditData
                             obj.GetType().GetProperties()[i].SetValue(obj, ((TextBox)VARIABLE).Text);
                             i++;
                             break;
-                    }
+                        case "ComboBox":
+                            var value = ((DataRowView)((ComboBox)VARIABLE).SelectedItem).Row.ItemArray[0].ToString();
+                            ForeignKeyModel foreignKeyModel = new ForeignKeyModel()
+                            {
+                                name = value,
+                                nameForeignColumn = ((ForeignKeyModel)obj.GetType().GetProperties()[i].GetValue(obj)).nameForeignColumn,
+                                nameForeignTable = ((ForeignKeyModel)obj.GetType().GetProperties()[i].GetValue(obj)).nameForeignTable
+                            };
+                            obj.GetType().GetProperties()[i].SetValue(obj, foreignKeyModel);
+                            break;
+                }
                 }
                 WriterData writerData = new WriterData();
                 writerData.WriteInDb(obj, WriteMode.UPDATEMODE, condition);
