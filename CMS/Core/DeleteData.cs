@@ -11,7 +11,8 @@ namespace CMS.Core
         public void DeleteDataOnDB(string tableName, string condition)
         {
             string sql = String.Format("delete from {0} where {1}",tableName, condition);
-
+            InteractionsDB interactions = new InteractionsDB();
+            interactions.DbExecuteNoReturn(sql);
         }
     }
 }

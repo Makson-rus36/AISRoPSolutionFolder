@@ -119,12 +119,4 @@ namespace CMS.Core
             }
         }
     }
-
-    class MyClass
-    {
-        public MyClass()
-        {
-            Console.Write("Ddd");
-        }
-    }
 }
