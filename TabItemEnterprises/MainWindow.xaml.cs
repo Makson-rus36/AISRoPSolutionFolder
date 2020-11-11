@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CMS.Core;
+using WindowAddData;
 
 namespace TabItemEnterprises
 {
@@ -43,22 +44,21 @@ namespace TabItemEnterprises
         private void BtnAdd_OnClick(object sender, RoutedEventArgs e)
         {
            enterprises ent = new enterprises();
-           ent.fullname = "ФГБОУ ВО ВГТУ";
-           ent.shortname = "ВГТУ";
-           WriterData writerData = new WriterData();
-           writerData.WriteInDb(ent, WriteMode.INSERTMODE, null);
-           loadData();
+           ent.fullname = "";
+           ent.shortname = "";
+           WindowAddData.MainWindow aMainWindow = new WindowAddData.MainWindow(ent, new List<string>(){"Полное название", "Краткое название"});
+           if(aMainWindow.ShowDialog() == true)
+               loadData();
         }
 
         private void BtnEdit_OnClick(object sender, RoutedEventArgs e)
         {
             var obj = (DataRowView)DataGridEnterprise.SelectedItem;
             enterprises ent = new enterprises();
-            ent.fullname = "ФГБОУ ВО ВГУ";
-            ent.shortname = "ВГУ";
+            ent.fullname = obj.DataView.ToTable().Rows[0].ItemArray[1].ToString();
+            ent.shortname = obj.DataView.ToTable().Rows[0].ItemArray[2].ToString();
             int id = int.Parse(obj.DataView.ToTable().Rows[0].ItemArray[0].ToString());
-            WriterData writerData = new WriterData();
-            writerData.WriteInDb(ent, WriteMode.UPDATEMODE, String.Format("code = {0}", id));
+            string condition = " code = " + id;
             loadData();
             //int a = 0;
         }

@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <StackPanel x:Name="MainPanel"></StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="MainPanel" Grid.Row="0"></StackPanel>
+        <Button x:Name="btnOK" Grid.Row="1" HorizontalAlignment="Right" Content="Готово" FontSize="14" VerticalAlignment="Center" Click="BtnOK_OnClick"></Button>
     </Grid>
 </Window>

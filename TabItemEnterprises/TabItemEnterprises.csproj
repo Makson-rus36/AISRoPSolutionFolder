@@ -15,6 +15,9 @@
     <Reference Include="CMS">
       <HintPath>..\AISRoP\bin\Debug\net5.0-windows\Modules\net5.0\CMS.dll</HintPath>
     </Reference>
+    <Reference Include="WindowAddData">
+      <HintPath>..\WindowAddData\bin\Debug\net5.0-windows\WindowAddData.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
