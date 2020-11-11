@@ -39,6 +39,7 @@ namespace WindowAddData
             {
                 try
                 {
+                    
                     Label label = new Label();
                     label.Content = listDescription[i];
                     i++;
@@ -56,6 +57,15 @@ namespace WindowAddData
                             MainPanel.Children.Add(datePicker);
                             break;
                         case "System.Int32":
+                            
+                            break;
+                        case "CMS.Core.ForeignKeyModel":
+                            ForeignKeyModel foreignKeyModel = (ForeignKeyModel)prop.GetValue(obj);
+                            ComboBox comboBox = new ComboBox();
+                            InteractionsDB interactionsDb = new InteractionsDB();
+                            comboBox.ItemsSource =
+                                interactionsDb.DbExecuteWithReturn(String.Format("select * from {0}", foreignKeyModel.nameForeignTable));
+                            comboBox.DisplayMemberPath = foreignKeyModel.nameForeignColumn;
                             
                             break;
                         default:

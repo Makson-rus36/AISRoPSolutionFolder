@@ -18,6 +18,9 @@
     <Reference Include="WindowAddData">
       <HintPath>..\WindowAddData\bin\Debug\net5.0-windows\WindowAddData.dll</HintPath>
     </Reference>
+    <Reference Include="WindowEditData">
+      <HintPath>..\WindowEditData\bin\Debug\net5.0-windows\WindowEditData.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

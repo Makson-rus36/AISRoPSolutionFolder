@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CMS.Core;
 using WindowAddData;
+using WindowEditData;
 
 namespace TabItemEnterprises
 {
@@ -53,13 +54,15 @@ namespace TabItemEnterprises
 
         private void BtnEdit_OnClick(object sender, RoutedEventArgs e)
         {
-            var obj = (DataRowView)DataGridEnterprise.SelectedItem;
+            var obj = DataGridEnterprise.SelectedCells;
             enterprises ent = new enterprises();
-            ent.fullname = obj.DataView.ToTable().Rows[0].ItemArray[1].ToString();
-            ent.shortname = obj.DataView.ToTable().Rows[0].ItemArray[2].ToString();
-            int id = int.Parse(obj.DataView.ToTable().Rows[0].ItemArray[0].ToString());
+            ent.fullname = ((DataRowView)obj[0].Item).Row.ItemArray[1].ToString();
+            ent.shortname = ((DataRowView)obj[0].Item).Row.ItemArray[2].ToString();
+            int id = int.Parse(((DataRowView)obj[0].Item).Row.ItemArray[0].ToString());
             string condition = " code = " + id;
-            loadData();
+            WindowEditData.WindowEdit windowEdit = new WindowEdit(ent, new List<string>() { "Полное название", "Краткое название" }, condition);
+            if(windowEdit.ShowDialog() == true)
+                loadData();
             //int a = 0;
         }
     }
