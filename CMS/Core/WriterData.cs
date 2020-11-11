@@ -44,6 +44,10 @@ namespace CMS.Core
                                         tableField.Add(prop.Name);
                                         tableValues.Add(prop.GetValue(obj).ToString());
                                         break;
+                                    case "CMS.Core.ForeignKeyModel":
+                                        tableField.Add(prop.Name);
+                                        tableValues.Add(((ForeignKeyModel)prop.GetValue(obj)).name);
+                                        break;
                                     default:
                                         Console.WriteLine(prop.PropertyType.ToString());
                                         break;
