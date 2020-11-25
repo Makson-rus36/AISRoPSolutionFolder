@@ -5,22 +5,187 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TabItemEnterprises"
         mc:Ignorable="d">
-    <Grid Background="White">
+
+    <UserControl.Resources>
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2"
+                                   SnapsToDevicePixels="true"
+                                   Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                   StrokeDashArray="1 2"
+                                   StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background"
+                         Color="#FFDDDDDD" />
+        <SolidColorBrush x:Key="Button.Static.Border"
+                         Color="#FF707070" />
+        <LinearGradientBrush x:Key="Button.MouseOver.Background">
+            
+            <GradientStop Color="#FFDED8D8" Offset="0" />
+            <GradientStop Color="#FFAAAAAA" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="Button.MouseOver.Border"
+                         Color="Transparent" />
+        <SolidColorBrush x:Key="Button.Pressed.Background"
+                         Color="#FFC4E5F6" />
+        <SolidColorBrush x:Key="Button.Pressed.Border"
+                         Color="#FF2C628B" />
+        <SolidColorBrush x:Key="Button.Disabled.Background"
+                         Color="#FFF4F4F4" />
+        <SolidColorBrush x:Key="Button.Disabled.Border"
+                         Color="#FFADB2B5" />
+        <SolidColorBrush x:Key="Button.Disabled.Foreground"
+                         Color="#FF838383" />
+
+        <Style x:Key="DefaultButtonStyle" 
+               TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+        <Setter Property="Background" Value="{StaticResource Button.Static.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    SnapsToDevicePixels="true">
+                        <ContentPresenter x:Name="contentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Focusable="False"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefaulted" Value="true">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="border" Property="Background" Value="{StaticResource Button.MouseOver.Background}" />
+                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource Button.MouseOver.Border}" />
+                        </Trigger>
+                        <!--<Trigger Property="IsPressed" Value="true">
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource Button.Pressed.Background}" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource Button.Pressed.Border}" />
+                            </Trigger>-->
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource Button.Disabled.Background}" />
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource Button.Disabled.Border}" />
+                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="{StaticResource Button.Disabled.Foreground}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</UserControl.Resources>
+    <Grid>
+        <TabControl>
+            <TabItem Header="Предприятия">
+                <TabItem.Content>
+                    <Grid Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Row="0" >
-            <Button Content="Добавить" x:Name="btnAdd" Click="BtnAdd_OnClick"></Button>
-            <Button x:Name="btnEdit" Content="Редактировать" Click="BtnEdit_OnClick"></Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,5,0,5" Height="29">
+            <Button x:Name="btnAdd" Click="BtnAdd_OnClick" Margin="0,0,10,0" Height="29" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource DefaultButtonStyle}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="C:/Users/Maks/Documents/Icons/Small/icons8-добавить-36.png"></Image>
+                        <Label Content="Добавить" VerticalAlignment="Center"></Label>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+
+            <Button x:Name="btnEdit" Click="BtnEdit_OnClick" Margin="0,0,10,0"  Background="Transparent" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource DefaultButtonStyle}" >
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="C:/Users/Maks/Documents/Icons/Small/icons8-редактировать-36.png"></Image>
+                        <Label Content="Редактировать" VerticalAlignment="Center"></Label>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+
+            <Button x:Name="btnDel" Click="BtnDel_OnClick" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource DefaultButtonStyle}">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="C:/Users/Maks/Documents/Icons/Small/icons8-удалить-навсегда-36.png"></Image>
+                        <Label Content="Удалить" VerticalAlignment="Center"></Label>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
         </StackPanel>
-        <DataGrid Background="Transparent"  x:Name="DataGridEnterprise" Grid.Row="1" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD" IsReadOnly="True">
+        <DataGrid Background="Transparent" SelectedCellsChanged="DataGridEnterprise_OnSelectedCellsChanged" x:Name="DataGridEnterprise" Grid.Row="1" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Код" Binding="{Binding code}" ClipboardContentBinding="{x:Null}"/>
                 <DataGridTextColumn Header="Название" Binding="{Binding fullname}" ClipboardContentBinding="{x:Null}"/>
-                <DataGridTextColumn Header="Количество подразделений" Binding="{Binding count}" ClipboardContentBinding="{x:Null}"/>
+                <DataGridTextColumn Header="Краткое название" Binding="{Binding shortname}" ClipboardContentBinding="{x:Null}"/>
             </DataGrid.Columns>
           
         </DataGrid>
+    </Grid>
+                </TabItem.Content>
+            </TabItem>
+<TabItem Header="Подразделения">
+    <TabItem.Content>
+        <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="9*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,5,0,5" Height="29">
+                            <Button x:Name="btnAddDivision" Click="BtnAddDivision_OnClick" Margin="0,0,10,0" Height="29" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource DefaultButtonStyle}">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="C:/Users/Maks/Documents/Icons/Small/icons8-добавить-36.png"></Image>
+                                        <Label Content="Добавить" VerticalAlignment="Center"></Label>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+
+                            <Button x:Name="btnEditDivision" Click="BtnEditDivision_OnClick"  Margin="0,0,10,0"  Background="Transparent" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource DefaultButtonStyle}" >
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="C:/Users/Maks/Documents/Icons/Small/icons8-редактировать-36.png"></Image>
+                                        <Label Content="Редактировать" VerticalAlignment="Center"></Label>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+
+                            <Button x:Name="btnDelDivision" Click="BtnDelDivision_OnClick"  Background="Transparent" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource DefaultButtonStyle}">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="C:/Users/Maks/Documents/Icons/Small/icons8-удалить-навсегда-36.png"></Image>
+                                        <Label Content="Удалить" VerticalAlignment="Center"></Label>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <DataGrid Background="Transparent"  x:Name="DataGridDivision" Grid.Row="1" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Код" Binding="{Binding code}" ClipboardContentBinding="{x:Null}"/>
+                                <DataGridTextColumn Header="Название" Binding="{Binding fullname}" ClipboardContentBinding="{x:Null}"/>
+                                <DataGridTextColumn Header="Краткое название" Binding="{Binding shortname}" ClipboardContentBinding="{x:Null}"/>
+                            </DataGrid.Columns>
+
+                        </DataGrid>
+                    </Grid>
+    </TabItem.Content>
+</TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
