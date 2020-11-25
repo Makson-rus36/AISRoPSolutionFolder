@@ -42,6 +42,7 @@ namespace WindowAddData
                 {
                     
                     Label label = new Label();
+                    label.FontSize = 14;
                     label.Content = listDescription[i];
                     i++;
                     MainPanel.Children.Add(label);
@@ -49,6 +50,7 @@ namespace WindowAddData
                     {
                         case "System.String":
                             TextBox textBox = new TextBox();
+                            textBox.FontSize = 14;
                             MainPanel.Children.Add(textBox);
                             break;
 
@@ -58,11 +60,14 @@ namespace WindowAddData
                             MainPanel.Children.Add(datePicker);
                             break;
                         case "System.Int32":
-                            
+                            TextBox textBoxnum = new TextBox();
+                            textBoxnum.FontSize = 14;
+                            MainPanel.Children.Add(textBoxnum);
                             break;
                         case "CMS.Core.ForeignKeyModel":
                             ForeignKeyModel foreignKeyModel = (ForeignKeyModel)prop.GetValue(obj);
                             ComboBox comboBox = new ComboBox();
+                            comboBox.FontSize = 14;
                             InteractionsDB interactionsDb = new InteractionsDB();
                             comboBox.ItemsSource =
                                 interactionsDb.DbExecuteWithReturn(String.Format("select * from {0}", foreignKeyModel.nameForeignTable));
@@ -98,7 +103,8 @@ namespace WindowAddData
                 switch (mType.Name)
                 {
                     case "TextBox":
-                        obj.GetType().GetProperties()[i].SetValue(obj,((TextBox)VARIABLE).Text);
+                        if(obj.GetType().GetProperties()[i].GetValue(obj)==null)
+                         obj.GetType().GetProperties()[i].SetValue(obj,((TextBox)VARIABLE).Text);
                         i++;
                         break;
                     case "ComboBox":
@@ -116,6 +122,11 @@ namespace WindowAddData
             WriterData writerData = new WriterData();
             writerData.WriteInDb(obj,WriteMode.INSERTMODE,null);
             this.DialogResult = true;
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
         }
     }
 }

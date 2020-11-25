@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WindowDeleteData\WindowDeleteData.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="CMS">
       <HintPath>..\AISRoP\bin\Debug\net5.0-windows\Modules\net5.0\CMS.dll</HintPath>
     </Reference>

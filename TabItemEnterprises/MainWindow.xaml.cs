@@ -24,12 +24,22 @@ namespace TabItemEnterprises
     /// </summary>
     public partial class MainWindow : UserControl
     {
-        
-        class enterprises
+
+        class subdivision
         {
             public string fullname { get; set; }
             public string shortname { get; set; }
-            //public ForeignKeyModel shortname { get; set; }
+            public string dative_name { get; set; }
+            public string genetive_name { get; set; }
+            public Int32  code_enterprise { get; set; }
+            public ForeignKeyModel code_maindivision { get; set; }
+        }
+
+        public class enterprises
+        {
+            public string fullname { get; set; }
+            public string shortname { get; set; }
+
         }
 
         public MainWindow()
@@ -41,7 +51,7 @@ namespace TabItemEnterprises
         private void loadData()
         {
             InteractionsDB interactions = new InteractionsDB();
-            DataGridEnterprise.ItemsSource = interactions.DbExecuteWithReturn("select * from enterprises");
+            DataGridEnterprise.ItemsSource = interactions.DbExecuteWithReturn("select code,fullname, shortname from enterprises");
         }
 
         private void BtnAdd_OnClick(object sender, RoutedEventArgs e)
@@ -69,6 +79,49 @@ namespace TabItemEnterprises
             if(windowEdit.ShowDialog() == true)
                 loadData();
             
+        }
+
+        private void BtnDel_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (DataGridEnterprise.SelectedCells.Count != 0)
+            {
+                var obj = DataGridEnterprise.SelectedCells;
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add(new DataColumn("Code", typeof(int)));
+                dataTable.Columns.Add(new DataColumn("Код", typeof(int)));
+                dataTable.Columns.Add(new DataColumn("Краткое название", typeof(string)));
+                dataTable.Columns.Add(new DataColumn("Полное название", typeof(string)));
+                DataRow dataRow = dataTable.NewRow();
+                dataRow["Code"]= int.Parse(((DataRowView)obj[0].Item).Row.ItemArray[0].ToString());
+                dataRow["Код"]= int.Parse(((DataRowView)obj[0].Item).Row.ItemArray[0].ToString());
+                dataRow["Полное название"] = ((DataRowView)obj[0].Item).Row.ItemArray[1].ToString();
+                dataRow["Краткое название"] = ((DataRowView)obj[0].Item).Row.ItemArray[2].ToString();
+                dataTable.Rows.Add(dataRow);
+                dataTable.TableName = "enterprises";
+                WindowDeleteData.MainWindow windowDeleteData = new WindowDeleteData.MainWindow(dataTable);
+                windowDeleteData.ShowDialog();
+                loadData();
+            }
+        }
+
+        private void BtnAddDivision_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BtnEditDivision_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void BtnDelDivision_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DataGridEnterprise_OnSelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+           
         }
     }
 }

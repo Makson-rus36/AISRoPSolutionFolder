@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CMS.Core;
 
 namespace WindowDeleteData
 {
@@ -20,10 +22,33 @@ namespace WindowDeleteData
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(List<object> dataObjects)
+        private DataTable dataTable;
+        public MainWindow(DataTable dataTable)
         {
             InitializeComponent();
-            dataGrid.ItemsSource = dataObjects;
+            this.dataTable = dataTable;
+            dataGrid.ItemsSource=dataTable.DefaultView;
+        }
+
+        private void BtnOK_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                DeleteData deleteData = new DeleteData();
+                string col = dataTable.Columns[0].ColumnName;
+                string data = dataTable.Rows[0].ItemArray[0].ToString();
+                deleteData.DeleteDataOnDB(dataTable.TableName, col + " = " + data);
+                DialogResult = true;
+            }
+            catch (Exception exception)
+            {
+               
+            }
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
         }
     }
 }

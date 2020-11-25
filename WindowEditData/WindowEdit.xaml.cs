@@ -130,6 +130,10 @@ namespace WindowEditData
                 writerData.WriteInDb(obj, WriteMode.UPDATEMODE, condition);
                 this.DialogResult = true;
             }
-        }
+            private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+            {
+                this.DialogResult = false;
+            }
+    }
 }
 

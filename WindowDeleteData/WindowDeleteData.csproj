@@ -11,6 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="CMS">
+      <HintPath>..\AISRoP\bin\Debug\net5.0-windows\Modules\net5.0\CMS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="icons8-галочка-36.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
