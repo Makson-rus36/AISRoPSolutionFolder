@@ -23,8 +23,9 @@ namespace WindowAddData
     public partial class MainWindow : Window
     {
         private object obj;
-        private List<String> listDescription;
-        public MainWindow(object obj, List<String> listDescription)
+        private List<string> listDescription;
+
+        public MainWindow(object obj, List<string> listDescription)
         {
             InitializeComponent();
             this.obj = obj;
@@ -35,45 +36,58 @@ namespace WindowAddData
         private void CreateGUI()
         {
             var mType = obj.GetType();
-            int i = 0;
+            var i = 0;
             foreach (var prop in mType.GetProperties())
-            {
                 try
                 {
-                    
-                    Label label = new Label();
+                    var label = new Label();
                     label.FontSize = 14;
                     label.Content = listDescription[i];
                     i++;
                     MainPanel.Children.Add(label);
+
                     switch (prop.PropertyType.ToString())
                     {
                         case "System.String":
-                            TextBox textBox = new TextBox();
+                            var textBox = new TextBox();
                             textBox.FontSize = 14;
+
+                            if (prop.GetValue(obj).ToString() != "")
+                            {
+                                textBox.Text = prop.GetValue(obj).ToString();
+                                textBox.IsReadOnly = true;
+                            }
+
                             MainPanel.Children.Add(textBox);
                             break;
 
                         case "System.DateTime":
-                            DatePicker datePicker = new DatePicker();
+                            var datePicker = new DatePicker();
                             datePicker.SelectedDate = DateTime.Today;
                             MainPanel.Children.Add(datePicker);
                             break;
                         case "System.Int32":
-                            TextBox textBoxnum = new TextBox();
+                            var textBoxnum = new TextBox();
                             textBoxnum.FontSize = 14;
+                            if (prop.GetValue(obj).ToString() != "")
+                            {
+                                textBoxnum.Text = prop.GetValue(obj).ToString();
+                                textBoxnum.IsReadOnly = true;
+                            }
+
                             MainPanel.Children.Add(textBoxnum);
                             break;
                         case "CMS.Core.ForeignKeyModel":
-                            ForeignKeyModel foreignKeyModel = (ForeignKeyModel)prop.GetValue(obj);
-                            ComboBox comboBox = new ComboBox();
+                            var foreignKeyModel = (ForeignKeyModel) prop.GetValue(obj);
+                            var comboBox = new ComboBox();
                             comboBox.FontSize = 14;
-                            InteractionsDB interactionsDb = new InteractionsDB();
+                            var interactionsDb = new InteractionsDB();
                             comboBox.ItemsSource =
-                                interactionsDb.DbExecuteWithReturn(String.Format("select * from {0}", foreignKeyModel.nameForeignTable));
+                                interactionsDb.DbExecuteWithReturn(string.Format("select * from {0}",
+                                    foreignKeyModel.nameForeignTable));
                             comboBox.DisplayMemberPath = foreignKeyModel.nameForeignColumn;
                             MainPanel.Children.Add(comboBox);
-                            
+
                             break;
                         default:
                             Console.WriteLine(prop.PropertyType.ToString());
@@ -82,51 +96,64 @@ namespace WindowAddData
                 }
                 catch (Exception exception)
                 {
-                    LoggerHelper.logger.startLog(String.Format("Во время создания запроса произошла ошибка. \n" +
+                    LoggerHelper.logger.startLog(string.Format("Во время создания запроса произошла ошибка. \n" +
                                                                "---------\n" +
                                                                "Сообщение: {0}\n" +
                                                                "Подробно: {1}\n" +
                                                                "Трассировка стека: {2}\n" +
-                                                               "---------", exception.Message, exception.InnerException, exception.StackTrace));
-
+                                                               "---------", exception.Message, exception.InnerException,
+                        exception.StackTrace));
                 }
-            }
         }
 
         private void BtnOK_OnClick(object sender, RoutedEventArgs e)
         {
-            int i = 0;
-            foreach (var VARIABLE in MainPanel.Children)
+            try
             {
-                Type mType = VARIABLE.GetType();
-                
-                switch (mType.Name)
+                var i = 0;
+                foreach (var VARIABLE in MainPanel.Children)
                 {
-                    case "TextBox":
-                        if(obj.GetType().GetProperties()[i].GetValue(obj)==null)
-                         obj.GetType().GetProperties()[i].SetValue(obj,((TextBox)VARIABLE).Text);
-                        i++;
-                        break;
-                    case "ComboBox":
-                        var value = ((DataRowView) ((ComboBox) VARIABLE).SelectedItem).Row.ItemArray[0].ToString();
-                        ForeignKeyModel foreignKeyModel = new ForeignKeyModel()
-                        {
-                            name=value,
-                            nameForeignColumn = ((ForeignKeyModel)obj.GetType().GetProperties()[i].GetValue(obj)).nameForeignColumn,
-                            nameForeignTable = ((ForeignKeyModel)obj.GetType().GetProperties()[i].GetValue(obj)).nameForeignTable
-                        };
-                        obj.GetType().GetProperties()[i].SetValue(obj, foreignKeyModel);
-                        break;
+                    var mType = VARIABLE.GetType();
+
+                    switch (mType.Name)
+                    {
+                        case "TextBox":
+                            if (obj.GetType().GetProperties()[i].GetValue(obj).ToString() == "")
+                                obj.GetType().GetProperties()[i].SetValue(obj, ((TextBox) VARIABLE).Text);
+                            i++;
+                            break;
+                        case "ComboBox":
+                            string value = null;
+                            if (((ComboBox) VARIABLE).SelectedIndex != -1)
+                                value = ((DataRowView) ((ComboBox) VARIABLE).SelectedItem).Row.ItemArray[0].ToString();
+                            var foreignKeyModel = new ForeignKeyModel()
+                            {
+                                name = value,
+                                nameForeignColumn = ((ForeignKeyModel) obj.GetType().GetProperties()[i].GetValue(obj))
+                                    .nameForeignColumn,
+                                nameForeignTable = ((ForeignKeyModel) obj.GetType().GetProperties()[i].GetValue(obj))
+                                    .nameForeignTable
+                            };
+                            obj.GetType().GetProperties()[i].SetValue(obj, foreignKeyModel);
+                            i++;
+                            break;
+                    }
                 }
+
+                var writerData = new WriterData();
+                writerData.WriteInDb(obj, WriteMode.INSERTMODE, null);
+                DialogResult = true;
             }
-            WriterData writerData = new WriterData();
-            writerData.WriteInDb(obj,WriteMode.INSERTMODE,null);
-            this.DialogResult = true;
+            catch (Exception exception)
+            {
+                MessageBox.Show("Произошла ошибка. Повторите попытку позже или обратитесь к системному администратору");
+                DialogResult = false;
+            }
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
+            DialogResult = false;
         }
     }
 }

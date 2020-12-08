@@ -180,6 +180,7 @@
                                 <DataGridTextColumn Header="Код" Binding="{Binding code}" ClipboardContentBinding="{x:Null}"/>
                                 <DataGridTextColumn Header="Название" Binding="{Binding fullname}" ClipboardContentBinding="{x:Null}"/>
                                 <DataGridTextColumn Header="Краткое название" Binding="{Binding shortname}" ClipboardContentBinding="{x:Null}"/>
+                                <DataGridTextColumn Header="Главное подразделение" Binding="{Binding maindiv}"> </DataGridTextColumn>
                             </DataGrid.Columns>
 
                         </DataGrid>

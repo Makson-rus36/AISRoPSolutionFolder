@@ -61,7 +61,9 @@ namespace WindowEditData
                                 MainPanel.Children.Add(datePicker);
                                 break;
                             case "System.Int32":
-
+                                TextBox textBoxNum = new TextBox();
+                                textBoxNum.Text = prop.GetValue(obj).ToString();
+                                MainPanel.Children.Add(textBoxNum); 
                                 break;
                             case "CMS.Core.ForeignKeyModel":
                                 ForeignKeyModel foreignKeyModel = (ForeignKeyModel)prop.GetValue(obj);
@@ -111,11 +113,21 @@ namespace WindowEditData
                     switch (mType.Name)
                     {
                         case "TextBox":
+                            int res;
+                            bool isInt = Int32.TryParse(((TextBox)VARIABLE).Text, out res);
+                            if (isInt)
+                            {
+                                int intValue = Int32.Parse(((TextBox)VARIABLE).Text);
+                                obj.GetType().GetProperties()[i].SetValue(obj,intValue);
+                            }
+                            else
                             obj.GetType().GetProperties()[i].SetValue(obj, ((TextBox)VARIABLE).Text);
                             i++;
                             break;
                         case "ComboBox":
-                            var value = ((DataRowView)((ComboBox)VARIABLE).SelectedItem).Row.ItemArray[0].ToString();
+                            String value=null;
+                            if (((ComboBox)VARIABLE).SelectedIndex!=-1)
+                            value = ((DataRowView)((ComboBox)VARIABLE).SelectedItem).Row.ItemArray[0].ToString();
                             ForeignKeyModel foreignKeyModel = new ForeignKeyModel()
                             {
                                 name = value,
