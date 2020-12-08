@@ -20,7 +20,7 @@ namespace CMS.Core
             try
             {
                 var sqlConnection = connectDb.GetSqlConnection;
-                LoggerHelper.logger.startLog("Формирование команды к серверу: начато");
+                LoggerHelper.logger.startLog("Формирование команды к серверу: начато: "+sqlQuery.ToString());
                 var sqlCommand = new SqlCommand(sqlQuery.ToString(), sqlConnection);
                 LoggerHelper.logger.startLog("Формирование команды к серверу: исполнение");
                 var countAffectedRow = sqlCommand.ExecuteNonQuery();

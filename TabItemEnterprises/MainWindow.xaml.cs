@@ -24,13 +24,13 @@ namespace TabItemEnterprises
     /// </summary>
     public partial class MainWindow : UserControl
     {
-
-        class subdivision
+        private int code;
+        public class subdivision
         {
             public string fullname { get; set; }
             public string shortname { get; set; }
             public string dative_name { get; set; }
-            public string genetive_name { get; set; }
+            public string genitive_name { get; set; }
             public Int32  code_enterprise { get; set; }
             public ForeignKeyModel code_maindivision { get; set; }
         }
@@ -52,8 +52,27 @@ namespace TabItemEnterprises
         {
             InteractionsDB interactions = new InteractionsDB();
             DataGridEnterprise.ItemsSource = interactions.DbExecuteWithReturn("select code,fullname, shortname from enterprises");
+            DataGridEnterprise.SelectedIndex = 0;
         }
 
+        private void loadSubdivision(int code_ent)
+        {
+            InteractionsDB interactions = new InteractionsDB();
+            DataGridDivision.ItemsSource =
+                interactions.DbExecuteWithReturn("select code,fullname, shortname, " +
+                                                 "(select case when code_maindivision IS NULL then 'предприятие' " +
+                                                 "else (select s.fullname " +
+                                                 "from subdivision as s " +
+                                                 "where s.code = sm.code_maindivision)end)  as maindiv " +
+                                                 "from subdivision as sm " +
+                                                 "where code_enterprise = "+code_ent);
+        }
+
+        private DataView loadOneSubdivision(int code)
+        {
+            InteractionsDB interactions = new InteractionsDB();
+            return interactions.DbExecuteWithReturn("select * from subdivision where code=" + code);
+        }
         private void BtnAdd_OnClick(object sender, RoutedEventArgs e)
         {
            enterprises ent = new enterprises();
@@ -106,12 +125,52 @@ namespace TabItemEnterprises
 
         private void BtnAddDivision_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var obj = DataGridEnterprise.SelectedCells;
+            subdivision subdev = new subdivision();
+            subdev.fullname = "";
+            subdev.shortname = "";
+            subdev.dative_name = "";
+            subdev.genitive_name = "";
+            subdev.code_enterprise = int.Parse(((DataRowView) obj[0].Item).Row.ItemArray[0].ToString());
+            subdev.code_maindivision = new ForeignKeyModel(){name = "",nameForeignColumn = "fullname", nameForeignTable = "subdivision" };
+            WindowAddData.MainWindow aMainWindow = new WindowAddData.MainWindow(subdev, 
+                new List<string>() { "Полное название", 
+                                     "Краткое название",
+                "дательный падеж",
+                "родительный падеж",
+                "код предприятия",
+                "главное подразделение (если есть)"
+                });
+            if (aMainWindow.ShowDialog() == true)
+                loadData();
         }
 
         private void BtnEditDivision_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (DataGridDivision.SelectedCells != null)
+            {
+                try
+                {
+                    var obj = DataGridDivision.SelectedCells;
+                    int id = int.Parse(((DataRowView) obj[0].Item).Row.ItemArray[0].ToString());
+                    DataView dv = loadOneSubdivision(id);
+                    subdivision sb = new subdivision();
+                    sb.genitive_name = dv.Table.Rows[0].ItemArray[4].ToString();
+                    sb.shortname = dv.Table.Rows[0].ItemArray[2].ToString();
+                    sb.code_maindivision = new ForeignKeyModel(){name = dv.Table.Rows[0].ItemArray[6].ToString() , nameForeignColumn = "fullname", nameForeignTable = "subdivision" };
+                    sb.dative_name = dv.Table.Rows[0].ItemArray[3].ToString();
+                    sb.fullname = dv.Table.Rows[0].ItemArray[1].ToString();
+                    sb.code_enterprise = Int32.Parse(dv.Table.Rows[0].ItemArray[5].ToString());
+                    string condition = " code = " + id;
+                    WindowEdit windowEdit = new WindowEdit(sb, new List<string>() { "Полное название", "Краткое название","Дательный падеж", "Родительный падеж","Код предприятия", "Код главного подразделения" }, condition);
+                    if (windowEdit.ShowDialog() == true)
+                        loadSubdivision(code);
+                }
+                catch (NullReferenceException exception)
+                {
+                    MessageBox.Show(exception.Message);
+                }
+            }
         }
 
         private void BtnDelDivision_OnClick(object sender, RoutedEventArgs e)
@@ -121,7 +180,16 @@ namespace TabItemEnterprises
 
         private void DataGridEnterprise_OnSelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
-           
+            try
+            {
+                var obj = DataGridEnterprise.SelectedCells;
+                code = int.Parse(((DataRowView) obj[0].Item).Row.ItemArray[0].ToString());
+                loadSubdivision(code);
+            }
+            catch (Exception exception)
+            {
+                // MessageBox.Show(exception.Message);
+            }
         }
     }
 }
