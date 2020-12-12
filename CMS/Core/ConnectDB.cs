@@ -59,7 +59,7 @@ namespace CMS.Core
                 return null;
         }
 
-        private string getConnectionString()
+        public string getConnectionString()
         {
             return strCon;
         }

@@ -187,6 +187,122 @@
                     </Grid>
     </TabItem.Content>
 </TabItem>
+            <TabItem Header="Помещения">
+                <TabItem.Content>
+                    <Grid Background="White">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="9*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,5,0,5" Height="29">
+                            <Button x:Name="btnAddRoom" Click="BtnAddRoom_OnClick" Margin="0,0,10,0" Height="29" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource DefaultButtonStyle}">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="C:/Users/Maks/Documents/Icons/Small/icons8-добавить-36.png"></Image>
+                                        <Label Content="Закрепить" VerticalAlignment="Center"></Label>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+
+                            <Button x:Name="btnEditRoom" Click="BtnEditRoom_OnClick"  Margin="0,0,10,0"  Background="Transparent" BorderBrush="Transparent" BorderThickness="1" Style="{DynamicResource DefaultButtonStyle}" >
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="C:/Users/Maks/Documents/Icons/Small/icons8-редактировать-36.png"></Image>
+                                        <Label Content="Перезакрепить" VerticalAlignment="Center"></Label>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <DataGrid Grid.Row="1" x:Name="dataGridRooms" IsReadOnly="True" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Код" Binding="{Binding code}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding numberRoom}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Тип" Binding="{Binding typeRoom}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Площадь (м2)" Binding="{Binding Area}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Номер подразделения" Binding="{Binding number_subdivision}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="Приказы">
+                <TabItem.Content>
+                    <Grid Background="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"></ColumnDefinition>
+                            <ColumnDefinition Width="3*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid x:Name="dataGridOrder" SelectedCellsChanged="DataGridOrder_OnSelectedCellsChanged" IsReadOnly="True" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Код" Binding="{Binding code}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Действие" Binding="{Binding typeOrder}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding number_order}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Дата" Binding="{Binding date_order}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Код подразделения" Binding="{Binding new_subdivision}"></DataGridTextColumn>
+                                
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock x:Name="TextBlockOrders" Margin="5" TextWrapping="Wrap" Grid.Column="1" Background="WhiteSmoke" FontSize="14" >
+                        </TextBlock>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="История использования помещений">
+                <TabItem.Content>
+                    <Grid Background="White">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="9*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel >
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Выберите дату просмотра истории"></Label>
+                                <DatePicker x:Name="DatePickerDateHistory" SelectedDateChanged="DatePickerDateHistory_OnSelectedDateChanged"></DatePicker>
+                            </StackPanel>
+                        </StackPanel>
+                        <DataGrid x:Name="dataGridHistory" Grid.Row="1" IsReadOnly="True" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Номер помещения" Binding="{Binding  numberRoom}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Тип помещения" Binding="{Binding typeRoom}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Наименование подразделения" Binding="{Binding nameSubdev}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="История площадей помещений">
+                <TabItem.Content>
+                    <Grid Background="White">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="80"/>
+                            <RowDefinition Height="9*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel >
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                <Label Content="Выберите год просмотра динамики"></Label>
+                                <TextBox x:Name="FieldDateDinamic" Width="100"></TextBox>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Выберите подразделение"></Label>
+                                <ComboBox x:Name="ComboBoxSubdiv" Width="100"></ComboBox>
+                            </StackPanel>
+                            <Button Content="Показать" HorizontalAlignment="Left" x:Name="ButtonShowSq" Click="ButtonShowSq_OnClick"></Button>
+                        </StackPanel>
+                        <DataGrid x:Name="DataGridDinamics" Grid.Row="1" IsReadOnly="True" HorizontalGridLinesBrush="#FF000F6E" VerticalGridLinesBrush="#FF000F6E" AutoGenerateColumns="False" SelectionMode="Single" AlternationCount="2" RowBackground="#FFBDBDBD">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Площадь" Binding="{Binding SquareRoom}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Событие" Binding="{Binding ActionOnRoom}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Дата" Binding="{Binding DateAction}"></DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="Дерево зависимостей">
+                <Grid>
+                    <TreeView x:Name="TreeViewDepencity"></TreeView>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>
