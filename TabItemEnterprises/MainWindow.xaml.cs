@@ -66,6 +66,90 @@ namespace TabItemEnterprises
                                                  "where s.code = sm.code_maindivision)end)  as maindiv " +
                                                  "from subdivision as sm " +
                                                  "where code_enterprise = "+code_ent);
+            interactions = new InteractionsDB();
+            ComboBoxSubdiv.ItemsSource =
+                interactions.DbExecuteWithReturn("select code from subdivision where code_enterprise = " + code_ent);
+            ComboBoxSubdiv.DisplayMemberPath = "code";
+            ComboBoxSubdiv.SelectedIndex = 0;
+        }
+
+        private void loadRooms(int code_ent)
+        {
+            InteractionsDB interactions = new InteractionsDB();
+            dataGridRooms.ItemsSource = interactions.DbExecuteWithReturn(
+                "select distinct premises.code, concat_ws('', premises.number_building,premises.number_floor, premises.number_room ) as numberRoom, " +
+                "(select _type_name from type_premises where premises._type = type_premises.code) as typeRoom, number_subdivision, Area " +
+                " from premises, subdivision " +
+                " where subdivision.code_enterprise = " + code_ent);
+        }
+
+        private void loadOrders(int code_ent)
+        {
+            InteractionsDB interactionsDb = new InteractionsDB();
+            string sql =
+                "select distinct orders.code, (select _type_name from type_orders where type_orders.code = orders._type) as typeOrder, date_order, number_order, new_subdivision " +
+                " from orders, subdivision where subdivision.code_enterprise = " + code_ent;
+            dataGridOrder.ItemsSource = interactionsDb.DbExecuteWithReturn(sql);
+        }
+
+        private void loadQuest1(string date)
+        {
+            string sql =String.Format(
+                "select(select concat_ws('', premises.number_building, premises.number_floor, premises.number_room) from premises where premises.code = history_room_change.code_room) as numberRoom, " +
+                " (select(select _type_name from type_premises where type_premises.code = premises._type) from premises where premises.code = history_room_change.code_room) as typeRoom, " +
+                " (select fullname from subdivision where code = (select new_subdivision from orders where orders.number_order = history_room_change.code_order_fix) ) as nameSubdev " +
+                " from history_room_change where (date_fix <= '{0}' and date_unfix > '{1}') or(date_fix <= '{2}' and date_unfix is null)", date,date,date);
+            InteractionsDB interactionsDb = new InteractionsDB();
+            dataGridHistory.ItemsSource = interactionsDb.DbExecuteWithReturn(sql);
+        }
+
+        private void loadQuest3(String year, string code_subdiv)
+        {
+
+            string sql = String.Format("declare @DateSt date, @DateEnd date, @NumberSubdivision int " +
+                         " set @DateSt = '{0}-01-01' " +
+                         " set @DateEnd = '{0}-12-31' " +
+                         " set @NumberSubdivision = {1} " +
+                         " select(select(select Area from premises where premises.code = room_in_orders.code_room) from room_in_orders where room_in_orders.code_order = orders.number_order) as SquareRoom, " +
+                         " (select case when new_subdivision = @NumberSubdivision then 'прибавилось' when old_subdivision = @NumberSubdivision then 'убавилось' end) as ActionOnRoom, " +
+                         " date_order as DateAction " +
+                         " from orders " +
+                         " where old_subdivision = @NumberSubdivision and date_order between @DateSt and @DateEnd or new_subdivision = @NumberSubdivision and date_order between @DateSt and @DateEnd", year, code_subdiv);
+
+            InteractionsDB interactionsDb = new InteractionsDB();
+            DataGridDinamics.ItemsSource = interactionsDb.DbExecuteWithReturn(sql);
+
+        }
+
+        private void loadQuest2(string code_ent)
+        {
+            TreeViewDepencity.Items.Clear();
+            string sql = "select fullname, code from subdivision where code_maindivision is null and code_enterprise = " + code_ent;
+            InteractionsDB interactionsDb = new InteractionsDB();
+            DataTable dataTable = interactionsDb.DbExecuteWithReturn(sql).Table;
+
+            foreach (DataRow VARIABLE in dataTable.Rows)
+            {
+                TreeViewItem treeViewItem = new TreeViewItem();
+                treeViewItem.Header = VARIABLE.ItemArray[0].ToString();
+                FindUsageAllDepenctity(treeViewItem, VARIABLE.ItemArray[1].ToString(), code_ent);
+                TreeViewDepencity.Items.Add(treeViewItem);
+            }
+
+        }
+
+        private void FindUsageAllDepenctity(TreeViewItem treeViewItem, string code_division, string code_ent)
+        {
+            string sql = String.Format("select fullname, code from subdivision where code_maindivision = {0} and code_enterprise = {1}", code_division, code_ent);
+            InteractionsDB interactionsDb = new InteractionsDB();
+            DataTable dataTable = interactionsDb.DbExecuteWithReturn(sql).Table;
+            foreach (DataRow VARIABLE in dataTable.Rows)
+            {
+                TreeViewItem TreeViewItem2 = new TreeViewItem();
+                TreeViewItem2.Header = VARIABLE.ItemArray[0].ToString();
+                treeViewItem.Items.Add(TreeViewItem2);
+                FindUsageAllDepenctity(TreeViewItem2, VARIABLE.ItemArray[1].ToString(), code_ent);
+            }
         }
 
         private DataView loadOneSubdivision(int code)
@@ -175,7 +259,22 @@ namespace TabItemEnterprises
 
         private void BtnDelDivision_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var obj = DataGridDivision.SelectedCells;
+                string sql = "delete from subdivision where code = " +
+                             (((DataRowView) obj[0].Item).Row.ItemArray[0].ToString());
+                InteractionsDB interactionsDb = new InteractionsDB();
+                interactionsDb.DbExecuteNoReturn(sql);
+                obj = DataGridEnterprise.SelectedCells;
+                code = int.Parse(((DataRowView) obj[0].Item).Row.ItemArray[0].ToString());
+                loadSubdivision(code);
+            }
+            catch (Exception exception)
+            {
+                // MessageBox.Show(exception.Message);
+            }
+
         }
 
         private void DataGridEnterprise_OnSelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
@@ -185,10 +284,81 @@ namespace TabItemEnterprises
                 var obj = DataGridEnterprise.SelectedCells;
                 code = int.Parse(((DataRowView) obj[0].Item).Row.ItemArray[0].ToString());
                 loadSubdivision(code);
+                loadRooms(code);
+                loadOrders(code);
+                loadQuest2(code.ToString());
             }
             catch (Exception exception)
             {
                 // MessageBox.Show(exception.Message);
+            }
+        }
+
+        private void BtnAddRoom_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CreateOrderFix createOrder = new CreateOrderFix();
+                if(createOrder.ShowDialog()==true)
+                    loadRooms(code);
+                loadOrders(code);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void BtnEditRoom_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CreateOrderChangeFixRoom createOrder = new CreateOrderChangeFixRoom();
+                if (createOrder.ShowDialog() == true)
+                    loadRooms(code);
+                loadOrders(code);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void DataGridOrder_OnSelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            try
+            {
+                if (dataGridOrder.SelectedCells != null)
+                {
+                    var obj = dataGridOrder.SelectedCells;
+                    string sql = "select text_order from orders where code = " +
+                                 ((DataRowView) obj[0].Item).Row.ItemArray[0].ToString();
+                    InteractionsDB interactionsDb = new InteractionsDB();
+                    DataTable dataTable = interactionsDb.DbExecuteWithReturn(sql).Table;
+                    TextBlockOrders.Text = dataTable.Rows[0].ItemArray[0].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void DatePickerDateHistory_OnSelectedDateChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (DatePickerDateHistory.SelectedDate != null)
+            {
+                string dateSelected = DatePickerDateHistory.SelectedDate.Value.ToString("yyyy-MM-dd");
+                loadQuest1(dateSelected);
+            }
+        }
+
+        private void ButtonShowSq_OnClick(object sender, RoutedEventArgs e)
+        {
+            int date;
+            if (!String.IsNullOrWhiteSpace(FieldDateDinamic.Text) && int.TryParse(FieldDateDinamic.Text, out date) && ComboBoxSubdiv.SelectedIndex!=-1)
+            {
+                loadQuest3(date.ToString(), ((DataRowView)ComboBoxSubdiv.SelectedItem).Row.ItemArray[0].ToString());
             }
         }
     }
